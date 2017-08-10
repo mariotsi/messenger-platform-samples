@@ -858,15 +858,11 @@ function testImage(senderID, imageObj) {
           if (err) {
             return console.log(err, err.stack); // an error occurred
           }
-          console.log('instagramID:', process.env.INSTAGRAM_ID);
-          console.log('element:', data.Labels[0]);
-          console.log('element Name:', data.Labels[0].Name);
-
           request(
             {
               uri:
                 'https://api.instagram.com/v1/tags/search?q=' +
-                data.Labels[0].name +
+                data.Labels[0].Name +
                 '&access_token=' +
                 process.env.INSTAGRAM_ID,
               method: 'GET',
