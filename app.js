@@ -866,7 +866,8 @@ function testImage(senderID, imageObj) {
                 data.Labels[0] +
                 '&access_token=' +
                 process.env.instagramID,
-              method: 'GET'
+              method: 'GET',
+              datatype: 'jsonp'
             },
             function(error, response, body) {
               if (!error && response.statusCode == 200) {
