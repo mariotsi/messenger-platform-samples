@@ -858,6 +858,30 @@ function testImage(senderID, imageObj) {
           if (err) {
             return console.log(err, err.stack); // an error occurred
           }
+
+          request(
+            {
+              uri:
+                'https://api.instagram.com/v1/tags/search?q=' +
+                data.Labels[0] +
+                '&access_token=' +
+                process.env.instagramID,
+              method: 'GET'
+            },
+            function(error, response, body) {
+              if (!error && response.statusCode == 200) {
+                console.log(JSON.stringify(response.data));
+              } else {
+                console.error(
+                  'Failed calling Send API instagram',
+                  response.statusCode,
+                  response.statusMessage,
+                  body.error
+                );
+              }
+            }
+          );
+
           return callSendAPI({
             recipient: {
               id: senderID
