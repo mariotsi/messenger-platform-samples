@@ -858,6 +858,9 @@ function testImage(senderID, imageObj) {
           if (err) {
             return console.log(err, err.stack); // an error occurred
           }
+          console.log('instagramID:', process.env.instagramID);
+          console.log('element:', data.Labels[0].name);
+
           request(
             {
               uri:
