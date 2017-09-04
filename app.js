@@ -873,7 +873,10 @@ function testImage(senderID, imageObj) {
                 console.log(JSON.stringify(response.data));
               } else {
                 console.error(
-                  'Failed calling Send API instagram',
+                  'Failed calling Send API instagram instagramID:' +
+                    process.env.INSTAGRAM_ID +
+                    ' tag:' +
+                    data.Labels[0].Name,
                   response.statusCode,
                   response.statusMessage,
                   body.error
