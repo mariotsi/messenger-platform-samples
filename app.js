@@ -855,6 +855,11 @@ function testImage(senderID, imageObj) {
       })
         .then(data => {
           const promises = [];
+
+          console.log(
+            `TEST URI: https://api.instagram.com/v1/tags/search?q=${obj.Name}&access_token=${process.env
+              .INSTAGRAM_ID}`
+          );
           data.Labels.forEach(obj => {
             promises.push(
               requestPromise(
