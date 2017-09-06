@@ -841,14 +841,14 @@ function testImage(senderID, imageObj) {
       // console.log('binary', bl);
       // const base64 = new Buffer(bl.toString(), 'binary').toString('base64');
       // const base64 = body.toString('base64');
-      const data = /* prefix + */ body;
+      //const data = /* prefix + */ body;
       console.log('base64', body);
 
       /* This operation detects labels in the supplied image */
       const awsPromise = promisify(rekognition.detectLabels());
       awsPromise({
         Image: {
-          Bytes: data
+          Bytes: body
         },
         MaxLabels: 123,
         MinConfidence: 70
