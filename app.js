@@ -17,7 +17,10 @@ const bodyParser = require('body-parser'),
   https = require('https'),
   AWS = require('aws-sdk'),
   uuid = require('uuid'),
-  request = require('request');
+  request = require('request'),
+  requestPromise = require('request-promise'),
+  blueBird = require('bluebird'),
+  { promisify } = require('util');
 
 const app = express();
 app.set('port', process.env.PORT || 5000);
@@ -827,98 +830,80 @@ function sendAccountLinking(recipientId) {
 
 function testImage(senderID, imageObj) {
   const BufferList = require('bufferlist').BufferList;
-
   const bl = new BufferList();
+  requestPromise({
+    uri: imageObj.payload.url,
+    encoding: null
+  })
+    .then(data => {
+      const type = response.headers['content-type'];
+      const prefix = 'data:' + type + ';base64,';
+      // console.log('binary', bl);
+      // const base64 = new Buffer(bl.toString(), 'binary').toString('base64');
+      // const base64 = body.toString('base64');
+      const data = /* prefix + */ body;
+      console.log('base64', body);
 
-  request(
-    {
-      uri: imageObj.payload.url,
-      encoding: null
-    },
-    (error, response, body) => {
-      if (!error && response.statusCode === 200) {
-        const type = response.headers['content-type'];
-        const prefix = 'data:' + type + ';base64,';
-        // console.log('binary', bl);
-        // const base64 = new Buffer(bl.toString(), 'binary').toString('base64');
-        // const base64 = body.toString('base64');
-        const data = /* prefix + */ body;
-        console.log('base64', body);
-
-        /* This operation detects labels in the supplied image */
-
-        const params = {
-          Image: {
-            Bytes: data
-          },
-          MaxLabels: 123,
-          MinConfidence: 70
-        };
-        rekognition.detectLabels(params, function(err, data) {
-          if (err) {
-            return console.log(err, err.stack); // an error occurred
-          }
-          request(
-            {
-              uri:
-                'https://api.instagram.com/v1/tags/search?q=' +
-                data.Labels[0].Name +
-                '&access_token=' +
-                process.env.INSTAGRAM_ID,
-              method: 'GET',
-              datatype: 'jsonp'
-            },
-            function(error, response, body) {
-              if (!error && response.statusCode == 200) {
-                console.log(JSON.stringify(response.data));
-              } else {
-                console.error(
-                  'Failed calling Send API instagram',
-                  response.statusCode,
-                  response.statusMessage,
-                  body.error
-                );
-              }
-            }
-          );
-
-          return callSendAPI({
-            recipient: {
-              id: senderID
-            },
-            message: {
-              text: JSON.stringify(data.Labels),
-              metadata: 'DEVELOPER_DEFINED_METADATA'
-            }
+      /* This operation detects labels in the supplied image */
+      const awsPromise = promisify(rekognition.detectLabels());
+      awsPromise({
+        Image: {
+          Bytes: data
+        },
+        MaxLabels: 123,
+        MinConfidence: 70
+      })
+        .then(data => {
+          const promises = [];
+          data.Labels.forEach(obj => {
+            promises.push(
+              requestPromise(
+                `https://api.instagram.com/v1/tags/search?q=${obj.Name}&access_token=${process.env.INSTAGRAM_ID}`
+              )
+            );
           });
-          /*
-           data = {
-           Labels: [
-           {
-           Confidence: 99.25072479248047,
-           Name: "People"
-           },
-           {
-           Confidence: 99.25074005126953,
-           Name: "Person"
-           }
-           ]
-           }
-           */
+          bluebird
+            .all(promises)
+            .then(function(response) {
+              //FB
+              requestPromise({
+                uri: 'https://graph.facebook.com/v2.6/me/messages',
+                qs: { access_token: PAGE_ACCESS_TOKEN },
+                method: 'POST',
+                json: {
+                  recipient: {
+                    id: senderID
+                  },
+                  message: {
+                    text: JSON.stringify(response),
+                    metadata: 'DEVELOPER_DEFINED_METADATA'
+                  }
+                }
+              })
+                .then(function(respons) {
+                  //FB DONE
+                  console.log(JSON.stringify(respons));
+                })
+                .catch(function(err) {
+                  //FB FAIL
+                  console.log(err, err.stack);
+                });
+            })
+            .catch(function(err) {
+              //INSTAGRAM FAIL
+              console.log(err, err.stack);
+            });
+        })
+        .catch(err => {
+          //AWS FAIL
+          console.log(err, err.stack);
         });
-      }
-    }
-  );
-
-  /* return callSendAPI({
-   recipient: {
-   id: senderID,
-   },
-   message: {
-   attachment: imageObj,
-   },
-   });*/
+    })
+    .catch(err => {
+      console.log(err, err.stack);
+    });
 }
+
 /*
  * Call the Send API. The message data goes in the body. If successful, we'll 
  * get the message id in a response 
