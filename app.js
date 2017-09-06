@@ -84,13 +84,13 @@ app.get('/webhook', function(req, res) {
  *
  */
 app.post('/webhook', function(req, res) {
-  let body = req.body;
+  const data = req.body;
 
   // Make sure this is a page subscription
-  if (body.object == 'page') {
+  if (data.object == 'page') {
     // Iterate over each entry
     // There may be multiple if batched
-    body.entry.forEach(function(pageEntry) {
+    data.entry.forEach(function(pageEntry) {
       const pageID = pageEntry.id;
       const timeOfEvent = pageEntry.time;
 
@@ -835,8 +835,8 @@ function testImage(senderID, imageObj) {
     uri: imageObj.payload.url,
     encoding: null
   })
-    .then(data => {
-      const type = response.headers['content-type'];
+    .then(imgResponse => {
+      const type = imgResponse.headers['content-type'];
       const prefix = 'data:' + type + ';base64,';
       // console.log('binary', bl);
       // const base64 = new Buffer(bl.toString(), 'binary').toString('base64');
