@@ -836,6 +836,7 @@ function testImage(senderID, imageObj) {
     encoding: null
   })
     .then(imgResponse => {
+      console.log(JSON.stringify(imgResponse));
       const type = imgResponse.headers['content-type'];
       const prefix = 'data:' + type + ';base64,';
       // console.log('binary', bl);
