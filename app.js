@@ -836,11 +836,12 @@ function testImage(senderID, imageObj) {
     encoding: null
   })
     .then(imgResponse => {
+      console.log(JSON.stringify(imgResponse));
       /* This operation detects labels in the supplied image */
       const awsPromise = promisify(rekognition.detectLabels);
       awsPromise({
         Image: {
-          Bytes: body
+          Bytes: imgResponse
         },
         MaxLabels: 123,
         MinConfidence: 70
