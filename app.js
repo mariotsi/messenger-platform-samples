@@ -840,7 +840,7 @@ function testImage(senderID, imageObj) {
       const awsPromise = promisify(rekognition.detectLabels);
       awsPromise({
         Image: {
-          Bytes: data
+          Bytes: body
         },
         MaxLabels: 123,
         MinConfidence: 70
