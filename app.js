@@ -841,35 +841,35 @@ function testImage(senderID, imageObj) {
       // console.log('binary', bl);
       // const base64 = new Buffer(bl.toString(), 'binary').toString('base64');
       // const base64 = body.toString('base64');
-      //const data = /* prefix + */ body;
+      const data = /* prefix + */ body;
       console.log('base64', body);
 
       /* This operation detects labels in the supplied image */
       const awsPromise = promisify(rekognition.detectLabels());
       awsPromise({
         Image: {
-          Bytes: body
+          Bytes: data
         },
         MaxLabels: 123,
         MinConfidence: 70
       })
-        .then(data => {
+        .then(awsResponse => {
           const promises = [];
 
-          console.log(
-            `TEST URI: https://api.instagram.com/v1/tags/search?q=${obj.Name}&access_token=${process.env
-              .INSTAGRAM_ID}`
-          );
-          data.Labels.forEach(obj => {
+          awsResponse.Labels.forEach(obj => {
             promises.push(
               requestPromise(
                 `https://api.instagram.com/v1/tags/search?q=${obj.Name}&access_token=${process.env.INSTAGRAM_ID}`
               )
             );
+            console.log(
+              `TEST URI: https://api.instagram.com/v1/tags/search?q=${obj.Name}&access_token=${process.env
+                .INSTAGRAM_ID}`
+            );
           });
           bluebird
             .all(promises)
-            .then(function(response) {
+            .then(function(instResponse) {
               //FB
               requestPromise({
                 uri: 'https://graph.facebook.com/v2.6/me/messages',
@@ -880,14 +880,14 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: JSON.stringify(response),
+                    text: JSON.stringify(instResponse),
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
               })
-                .then(function(respons) {
+                .then(function(FBResponse) {
                   //FB DONE
-                  console.log(JSON.stringify(respons));
+                  console.log(JSON.stringify(FBResponse));
                 })
                 .catch(function(err) {
                   //FB FAIL
