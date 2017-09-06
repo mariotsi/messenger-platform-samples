@@ -837,7 +837,7 @@ function testImage(senderID, imageObj) {
   })
     .then(imgResponse => {
       /* This operation detects labels in the supplied image */
-      const awsPromise = promisify(rekognition.detectLabels());
+      const awsPromise = promisify(rekognition.detectLabels);
       awsPromise({
         Image: {
           Bytes: data
