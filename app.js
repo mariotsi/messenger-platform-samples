@@ -84,7 +84,7 @@ app.get('/webhook', function(req, res) {
  *
  */
 app.post('/webhook', function(req, res) {
-  const data = req.body;
+  let data = req.body;
 
   // Make sure this is a page subscription
   if (data.object == 'page') {
@@ -841,7 +841,7 @@ function testImage(senderID, imageObj) {
       // console.log('binary', bl);
       // const base64 = new Buffer(bl.toString(), 'binary').toString('base64');
       // const base64 = body.toString('base64');
-      const data = /* prefix + */ body;
+      let data = /* prefix + */ body;
       console.log('base64', body);
 
       /* This operation detects labels in the supplied image */
