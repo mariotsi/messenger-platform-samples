@@ -827,13 +827,13 @@ function sendAccountLinking(recipientId) {
   callSendAPI(messageData);
 }
 
-_include_headers = function(body, response, resolveWithFullResponse) {
-  return { headers: response.headers, data: body };
-};
-
 function testImage(senderID, imageObj) {
   const BufferList = require('bufferlist').BufferList;
   const bl = new BufferList();
+
+  _include_headers = function(body, response, resolveWithFullResponse) {
+    return { headers: response.headers, data: body };
+  };
   console.log('TEST DDL');
   requestPromise({
     uri: imageObj.payload.url,
