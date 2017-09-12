@@ -18,8 +18,7 @@ const bodyParser = require('body-parser'),
   AWS = require('aws-sdk'),
   uuid = require('uuid'),
   request = require('request'),
-  requestPromise = require('request-promise'),
-  blueBird = require('bluebird'),
+  requestPromise = require('request-promise-native'),
   { promisify } = require('util');
 
 const app = express();
@@ -828,20 +827,29 @@ function sendAccountLinking(recipientId) {
   callSendAPI(messageData);
 }
 
+_include_headers = function(body, response, resolveWithFullResponse) {
+  return { headers: response.headers, data: body };
+};
+
 function testImage(senderID, imageObj) {
   const BufferList = require('bufferlist').BufferList;
   const bl = new BufferList();
+
   requestPromise({
     uri: imageObj.payload.url,
-    encoding: null
+    encoding: null,
+    method: 'GET',
+    json: true,
+    transform: _include_headers
   })
     .then(imgResponse => {
-      console.log(JSON.stringify(imgResponse));
+      console.log('header', imgResponse.headers);
+      console.log('data', imgResponse.data);
       /* This operation detects labels in the supplied image */
       const awsPromise = promisify(rekognition.detectLabels);
       awsPromise({
         Image: {
-          Bytes: imgResponse
+          Bytes: imgResponse.data
         },
         MaxLabels: 123,
         MinConfidence: 70
@@ -860,8 +868,8 @@ function testImage(senderID, imageObj) {
                 .INSTAGRAM_ID}`
             );
           });
-          bluebird
-            .all(promises)
+
+          Promise.all(promises)
             .then(function(instResponse) {
               //FB
               requestPromise({
