@@ -834,7 +834,7 @@ _include_headers = function(body, response, resolveWithFullResponse) {
 function testImage(senderID, imageObj) {
   const BufferList = require('bufferlist').BufferList;
   const bl = new BufferList();
-
+  console.log('TEST DDL');
   requestPromise({
     uri: imageObj.payload.url,
     encoding: null,
@@ -843,8 +843,8 @@ function testImage(senderID, imageObj) {
     transform: _include_headers
   })
     .then(imgResponse => {
-      console.log('header', imgResponse.headers);
-      console.log('data', imgResponse.data);
+      console.log('header DDL', imgResponse.headers);
+      console.log('data DDL', imgResponse.data);
       /* This operation detects labels in the supplied image */
       const awsPromise = promisify(rekognition.detectLabels);
       awsPromise({
