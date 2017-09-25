@@ -861,10 +861,6 @@ function testImage(senderID, imageObj) {
                 `https://api.instagram.com/v1/tags/search?q=${obj.Name}&access_token=${process.env.INSTAGRAM_ID}`
               )
             );
-            console.log(
-              `TEST URI: https://api.instagram.com/v1/tags/search?q=${obj.Name}&access_token=${process.env
-                .INSTAGRAM_ID}`
-            );
           });
 
           Promise.all(promises)
@@ -879,7 +875,7 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: JSON.stringify(instResponse),
+                    text: JSON.stringify(instResponse.slice(0,630)),
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
