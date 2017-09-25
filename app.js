@@ -858,9 +858,13 @@ function testImage(senderID, imageObj) {
           awsResponse.Labels.forEach(obj => {
             console.log("DDL promise name:"+obj.Name);
             promises.push(
-              requestPromise(
-                `https://api.instagram.com/v1/tags/search?q=${obj.Name}&access_token=${process.env.INSTAGRAM_ID}`
-              )
+               requestPromise({
+                uri: `https://api.instagram.com/v1/tags/search?q=${obj.Name}&access_token=${process.env.INSTAGRAM_ID}`,
+                encoding: null,
+                method: 'GET',
+                json: true,
+                transform: _include_headers
+              })
             );
           });
           console.log("DDL promises:",promises);
@@ -868,7 +872,7 @@ function testImage(senderID, imageObj) {
             .then(function(instResponse) {
               //FB
 
-              console.log("DDL:",instResponse);
+              console.log("DDL:",instResponse[0]);
               requestPromise({
                 uri: 'https://graph.facebook.com/v2.6/me/messages',
                 qs: { access_token: PAGE_ACCESS_TOKEN },
