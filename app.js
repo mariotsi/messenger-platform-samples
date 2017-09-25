@@ -313,7 +313,6 @@ function receivedMessage(event) {
   } else if (messageAttachments) {
     console.log(messageAttachments);
     if (messageAttachments[0].type === 'image') {
-      console.log("test image!")
       return testImage(senderID, messageAttachments[0]);
     }
     sendTextMessage(senderID, 'Message with attachment received');
@@ -831,18 +830,20 @@ function sendAccountLinking(recipientId) {
 function testImage(senderID, imageObj) {
   const BufferList = require('bufferlist').BufferList;
   const bl = new BufferList();
-  console.log('TEST DDL');
-  const _include_headers =(body, response, resolveWithFullResponse)=> {
+
+  let _include_headers = function(body, response, resolveWithFullResponse) {
     return { headers: response.headers, data: body };
   };
-  
-  requestPromise({
+  let options = {
     uri: imageObj.payload.url,
     encoding: null,
     method: 'GET',
     json: true,
     transform: _include_headers
-  })
+  }
+
+  console.log('TEST DDL');
+  requestPromise(options)
     .then(imgResponse => {
       console.log('header DDL', imgResponse.headers);
       console.log('data DDL', imgResponse.data);
