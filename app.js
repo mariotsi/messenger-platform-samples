@@ -832,7 +832,7 @@ function testImage(senderID, imageObj) {
   const BufferList = require('bufferlist').BufferList;
   const bl = new BufferList();
   console.log('TEST DDL');
-  _include_headers = function(body, response, resolveWithFullResponse) {
+  const _include_headers =(body, response, resolveWithFullResponse)=> {
     return { headers: response.headers, data: body };
   };
   
