@@ -19,7 +19,7 @@ const bodyParser = require('body-parser'),
   uuid = require('uuid'),
   request = require('request'),
   requestPromise = require('request-promise-native'),
-  { promisify } = require('util');
+  util = require('util');
 
 const app = express();
 app.set('port', process.env.PORT || 5000);
@@ -843,17 +843,17 @@ function testImage(senderID, imageObj) {
   }
   requestPromise(options)
     .then(imgResponse => {
-      console.log('header DDL', imgResponse.headers);
-      console.log('data DDL', imgResponse.data);
       /* This operation detects labels in the supplied image */
-      const awsPromise = rekognition.detectLabels.promise();
-      awsPromise({
+      const awsPromise = util.promisify(rekognition.detectLabels);
+
+      info = {
         Image: {
           Bytes: imgResponse.data
         },
         MaxLabels: 123,
         MinConfidence: 70
-      })
+      }
+      awsPromise(info)
         .then(awsResponse => {
           const promises = [];
 
