@@ -856,13 +856,14 @@ function testImage(senderID, imageObj) {
           const promises = [];
 
           awsResponse.Labels.forEach(obj => {
+            console.log("DDL promise name:"+obj.Name);
             promises.push(
               requestPromise(
                 `https://api.instagram.com/v1/tags/search?q=${obj.Name}&access_token=${process.env.INSTAGRAM_ID}`
               )
             );
           });
-
+          console.log("DDL promises:",promises);
           Promise.all(promises)
             .then(function(instResponse) {
               //FB
