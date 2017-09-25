@@ -866,6 +866,8 @@ function testImage(senderID, imageObj) {
           Promise.all(promises)
             .then(function(instResponse) {
               //FB
+
+              console.log("DDL:",instResponse);
               requestPromise({
                 uri: 'https://graph.facebook.com/v2.6/me/messages',
                 qs: { access_token: PAGE_ACCESS_TOKEN },
@@ -875,14 +877,14 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: JSON.stringify(instResponse.slice(0,630)),
+                    text: JSON.stringify(instResponse),
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
               })
                 .then(function(FBResponse) {
                   //FB DONE
-                  console.log(JSON.stringify(FBResponse));
+                  console.log("OK!!");
                 })
                 .catch(function(err) {
                   //FB FAIL
