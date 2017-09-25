@@ -841,14 +841,12 @@ function testImage(senderID, imageObj) {
     json: true,
     transform: _include_headers
   }
-
-  console.log('TEST DDL');
   requestPromise(options)
     .then(imgResponse => {
       console.log('header DDL', imgResponse.headers);
       console.log('data DDL', imgResponse.data);
       /* This operation detects labels in the supplied image */
-      const awsPromise = promisify(rekognition.detectLabels);
+      const awsPromise = rekognition.detectLabels.promise();
       awsPromise({
         Image: {
           Bytes: imgResponse.data
