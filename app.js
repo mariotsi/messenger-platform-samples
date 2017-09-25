@@ -845,15 +845,13 @@ function testImage(senderID, imageObj) {
     .then(imgResponse => {
       /* This operation detects labels in the supplied image */
       const awsPromise = util.promisify(rekognition.detectLabels);
-
-      info = {
+      awsPromise({
         Image: {
           Bytes: imgResponse.data
         },
         MaxLabels: 123,
         MinConfidence: 70
-      }
-      awsPromise(info)
+      })
         .then(awsResponse => {
           const promises = [];
 
