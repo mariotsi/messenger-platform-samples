@@ -886,7 +886,7 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: tags.splice(0,29).map((el)=>{
+                    text: '#bot '+ tags.splice(0,29).map((el)=>{
                             return '#'+el.name
                           }).join().replace(new RegExp(',', 'g'), ' '),
                     metadata: 'DEVELOPER_DEFINED_METADATA'
