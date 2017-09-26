@@ -870,9 +870,7 @@ function testImage(senderID, imageObj) {
             .then(function(instResponses) {
               const tags = [];
               instResponses.forEach((resp)=>{
-                  
-                console.log("Resp.data",JSON.stringify(resp.data))
-                  resp.data.forEach((tag)=>{
+                  resp.data.data.forEach((tag)=>{
                     if(tags.indexOf(tag.name) < 0){
                       tags.push(`#${tag.name}`);
                     }
