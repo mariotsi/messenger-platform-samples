@@ -867,8 +867,11 @@ function testImage(senderID, imageObj) {
             );
           });          
           Promise.all(promises)
-            .then(function(instResponse) {
-              //FB
+            .then(function(instResponses) {
+
+              console.log(JSON.stringify(instResponses.data));
+              
+              //FB chat
               requestPromise({
                 uri: 'https://graph.facebook.com/v2.6/me/messages',
                 qs: { access_token: PAGE_ACCESS_TOKEN },
@@ -878,7 +881,7 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: JSON.stringify(instResponse).slice(0,200),
+                    text: JSON.stringify('TODO - Chat'),
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
