@@ -831,15 +831,12 @@ function testImage(senderID, imageObj) {
   const BufferList = require('bufferlist').BufferList;
   const bl = new BufferList();
 
-  let _include_headers = function(body, response, resolveWithFullResponse) {
-    return { headers: response.headers, data: body };
-  };
-  let options = {
+  const options = {
     uri: imageObj.payload.url,
     encoding: null,
     method: 'GET',
     json: true,
-    transform: _include_headers
+    transform: (body, response, resolveWithFullResponse) => ({headers: response.headers, data: body})
   }
   requestPromise(options)
     .then(imgResponse => {
@@ -862,20 +859,22 @@ function testImage(senderID, imageObj) {
                 encoding: null,
                 method: 'GET',
                 json: true,
-                transform: _include_headers
+                transform: (body, response, resolveWithFullResponse) => ({headers: response.headers, data: body})
               })
             );
           });          
           Promise.all(promises)
-            .then(function(instResponses) {
+            .then((instResponses) =>{
               const tags = [];
               instResponses.forEach((resp)=>{
                 tags.push(...resp.data.data)
               });
               
               // Sorting
-              tags.sort(function(a,b) {return (a.media_count > b.media_count) ? 1 : ((b.media_count > a.media_count) ? -1 : 0);} );               
-
+              tags.sort((a,b) => a.media_count > b.media_count ? 1 : -1);               
+              
+              console.log(JSON.stringify(tags));
+              
               //FB chat
               requestPromise({
                 uri: 'https://graph.facebook.com/v2.6/me/messages',
@@ -886,23 +885,21 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: '#bot '+ tags.splice(0,29).map((el)=>{
-                            return '#'+el.name
-                          }).join().replace(new RegExp(',', 'g'), ' '),
+                    text: `#bot ${tags.splice(0,29).map(({name}) => `#${name}`).join().replace(/,/g, ' ')}`,
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
               })
-                .then(function(FBResponse) {
+                .then((FBResponse)=> {
                   //FB DONE
                   console.log("OK!!");
                 })
-                .catch(function(err) {
+                .catch((err)=>{
                   //FB FAIL
                   console.log(err, err.stack);
                 });
             })
-            .catch(function(err) {
+            .catch((err)=> {
               //INSTAGRAM FAIL
               console.log(err, err.stack);
             });
