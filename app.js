@@ -866,11 +866,12 @@ function testImage(senderID, imageObj) {
               })
             );
           });
-          console.log("DDL promise 0:",promises[0]);
+          
+          console.log("DDL promise 0:", JSON.stringify(promises[0]));
+          
           Promise.all(promises)
             .then(function(instResponse) {
               //FB
-
               console.log("DDL:",instResponse);
               requestPromise({
                 uri: 'https://graph.facebook.com/v2.6/me/messages',
@@ -881,7 +882,7 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: JSON.stringify(instResponse),
+                    text: JSON.stringify(instResponse).slice(0,200),
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
