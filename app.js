@@ -875,10 +875,6 @@ function testImage(senderID, imageObj) {
               
               // Sorting
               tags.sort(function(a,b) {return (a.media_count > b.media_count) ? 1 : ((b.media_count > a.media_count) ? -1 : 0);} );               
-              
-              const tagMessage = tags.splice(0,29).map((el)=>{
-                return '#'+el.name
-              }).join().replace(new RegExp(',', 'g'), ' ')
 
               //FB chat
               requestPromise({
@@ -890,7 +886,9 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: tagArrayMessage.join().replace(new RegExp(',', 'g'), ' '),
+                    text: tags.splice(0,29).map((el)=>{
+                            return '#'+el.name
+                          }).join().replace(new RegExp(',', 'g'), ' '),
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
