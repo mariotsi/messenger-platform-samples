@@ -877,8 +877,6 @@ function testImage(senderID, imageObj) {
                   });
               });
 
-              console.log("Tags",JSON.stringify(tags))
-
               //FB chat
               requestPromise({
                 uri: 'https://graph.facebook.com/v2.6/me/messages',
@@ -889,7 +887,7 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: JSON.stringify(tags),
+                    text: tags.join().replace(new RegExp(',', 'g'), ' '),
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
