@@ -876,9 +876,9 @@ function testImage(senderID, imageObj) {
               // Sorting
               tags.sort(function(a,b) {return (a.media_count > b.media_count) ? 1 : ((b.media_count > a.media_count) ? -1 : 0);} );               
               
-              const tagArrayMessage = tags.splice(0,100).map((el)=>{
+              const tagMessage = tags.splice(0,29).map((el)=>{
                 return '#'+el.name
-              }); 
+              }).join().replace(new RegExp(',', 'g'), ' ')
 
               //FB chat
               requestPromise({
