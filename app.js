@@ -870,12 +870,15 @@ function testImage(senderID, imageObj) {
             .then(function(instResponses) {
               const tags = [];
               instResponses.forEach((resp)=>{
-                  resp.data.data.forEach((tag)=>{
-                    if(tags.indexOf(tag.name) < 0){
-                      tags.push(`#${tag.name}`);
-                    }
-                  });
+                tags.push(...resp.data.data)
               });
+              
+              // Sorting
+              tags.sort(function(a,b) {return (a.media_count > b.media_count) ? 1 : ((b.media_count > a.media_count) ? -1 : 0);} );               
+              
+              const tagArrayMessage = tags.splice(0,100).map((el)=>{
+                return '#'+el.name
+              }); 
 
               //FB chat
               requestPromise({
@@ -887,7 +890,7 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: tags.join().replace(new RegExp(',', 'g'), ' '),
+                    text: tagArrayMessage.join().replace(new RegExp(',', 'g'), ' '),
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
