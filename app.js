@@ -868,9 +868,17 @@ function testImage(senderID, imageObj) {
           });          
           Promise.all(promises)
             .then(function(instResponses) {
+              const tags = [];
+              instResponses.forEach((resp)=>{
+                  resp.data.forEach((tag)=>{
+                    if(tags.indexOf(tag.name) < 0){
+                      tags.push(`#${tag.name}`);
+                    }
+                  });
+              });
 
-              console.log(JSON.stringify(instResponses.data));
-              
+              console.log("Tags",JSON.stringify(tags))
+
               //FB chat
               requestPromise({
                 uri: 'https://graph.facebook.com/v2.6/me/messages',
@@ -881,7 +889,7 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: JSON.stringify('TODO - Chat'),
+                    text: JSON.stringify(tags),
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
