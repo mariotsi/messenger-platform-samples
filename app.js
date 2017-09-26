@@ -861,7 +861,7 @@ function testImage(senderID, imageObj) {
                 uri: `https://api.instagram.com/v1/tags/search?q=${obj.Name}&access_token=${process.env.INSTAGRAM_ID}`,
                 encoding: null,
                 method: 'GET',
-                dataType: "json",
+                json: true,
                 transform: _include_headers
               })
             );
@@ -872,8 +872,7 @@ function testImage(senderID, imageObj) {
               instResponses.forEach((resp)=>{
                   
                 console.log("Resp.data",JSON.stringify(resp.data))
-                
-                resp.data.forEach((tag)=>{
+                  resp.data.forEach((tag)=>{
                     if(tags.indexOf(tag.name) < 0){
                       tags.push(`#${tag.name}`);
                     }
