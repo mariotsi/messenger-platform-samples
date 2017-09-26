@@ -878,7 +878,7 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: 'ciao',
+                    text: JSON.stringify(instResponse).slice(0,200),
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
