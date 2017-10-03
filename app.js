@@ -879,6 +879,7 @@ function testImage(senderID, imageObj) {
               });
 
               returnTags.sort((a,b) => a.media_count > b.media_count ? 1 : -1)
+
               //FB chat
               requestPromise({
                 uri: 'https://graph.facebook.com/v2.6/me/messages',
@@ -889,7 +890,7 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: `${tags.splice(0,MAXTAG).map(({name}) => `#${name}`).join().replace(/,/g, ' ')}`,
+                    text: `${returnTags.splice(0,MAXTAG).map(({name}) => `#${name}`).join().replace(/,/g, ' ')}`,
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
