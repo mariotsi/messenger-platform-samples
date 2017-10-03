@@ -874,6 +874,8 @@ function testImage(senderID, imageObj) {
                 tags.push(resp.data.data.sort((a,b) => a.media_count > b.media_count ? 1 : -1))
               });
               
+              console.log(JSON.stringify(instResponses));
+              
               tags.map((tagVector)=>{
                 returnTags = returnTags.concat(tagVector.slice(0,Math.ceil(MAXTAG/instResponses.length)))
               });
