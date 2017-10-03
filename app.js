@@ -868,14 +868,14 @@ function testImage(senderID, imageObj) {
           Promise.all(promises)
             .then((instResponses) =>{
               const tags = [];
+              let returnTags = [];
               // create n ordered arrays
               instResponses.forEach((resp)=>{
                 tags.push(resp.data.data.sort((a,b) => a.media_count > b.media_count ? 1 : -1))
               });
               
-              const returnTags = []
               tags.map((tagVector)=>{
-                returnTags.concat(tagVector.slice(0,Math.ceil(MAXTAG/instResponses.length)))
+                returnTags = returnTags.concat(tagVector.slice(0,Math.ceil(MAXTAG/instResponses.length)))
               });
 
               returnTags.sort((a,b) => a.media_count > b.media_count ? 1 : -1)
