@@ -19,7 +19,9 @@ const bodyParser = require('body-parser'),
   uuid = require('uuid'),
   request = require('request'),
   requestPromise = require('request-promise-native'),
-  util = require('util');
+  util = require('util'),
+  MAXTAG = 30;
+
 
 const app = express();
 app.set('port', process.env.PORT || 5000);
@@ -866,15 +868,17 @@ function testImage(senderID, imageObj) {
           Promise.all(promises)
             .then((instResponses) =>{
               const tags = [];
+              // create n ordered arrays
               instResponses.forEach((resp)=>{
-                tags.push(...resp.data.data)
+                tags.push(resp.data.data.sort((a,b) => a.media_count > b.media_count ? 1 : -1))
               });
               
-              // Sorting
-              tags.sort((a,b) => a.media_count > b.media_count ? 1 : -1);               
-              
-              console.log(JSON.stringify(tags));
-              
+              const returnTags = []
+              tags.map((tagVector)=>{
+                returnTags.concat(tagVector.slice(0,Math.ceil(MAXTAG/instResponses.length)))
+              });
+
+              returnTags.sort((a,b) => a.media_count > b.media_count ? 1 : -1)
               //FB chat
               requestPromise({
                 uri: 'https://graph.facebook.com/v2.6/me/messages',
@@ -885,7 +889,7 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: `#bot ${tags.splice(0,29).map(({name}) => `#${name}`).join().replace(/,/g, ' ')}`,
+                    text: `${tags.splice(0,MAXTAG).map(({name}) => `#${name}`).join().replace(/,/g, ' ')}`,
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
