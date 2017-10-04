@@ -853,7 +853,6 @@ function testImage(senderID, imageObj) {
       })
         .then(awsResponse => {
           const promises = [];
-
           awsResponse.Labels.forEach(obj => {
             promises.push(
                requestPromise({
@@ -873,10 +872,10 @@ function testImage(senderID, imageObj) {
               var elementsNo = 0;
 
               instResponses.forEach((resp)=>{
-                let data = resp.data.data,
-                    subtotal = 0;                    
+                let data = resp.data.data;
+                let subtotal = 0;                    
                 data.sort((a,b) => a.media_count < b.media_count ? 1 : -1)
-                
+                console.log('data',JSON.stringify(data))
                 granTotal += data.reduce((a,b)=>{
                   elementsNo += 1
                   subtotal += b.media_count
@@ -886,13 +885,10 @@ function testImage(senderID, imageObj) {
                 vectorTags.push(data)
                 vectorTags.subTotal = subtotal
               });
-
-              console.log('vectorTags',JSON.stringify(vectorTags))
               console.log('granTotal',JSON.stringify(granTotal))
               console.log('elementsNo',JSON.stringify(elementsNo))
               console.log('first subtotal',JSON.stringify(vectorTags[0].subTotal))
-              
-              
+                            
               vectorTags.forEach((tags,i)=>{
                 let el = tags.splice(-1,1)
                 if(tags[tags.length-1].media_count > (granTotal/elementsNo))
