@@ -890,7 +890,7 @@ function testImage(senderID, imageObj) {
                 if(tags[tags.length-1].media_count > (granTotal/elementsNo))
                   returnTags = returnTags.concat(el)  
 
-                returnTags = returnTags.concat(tags.splice(0,Math.ceil(MAXTAG*granTotal/elementags.subTotal)))
+                returnTags = returnTags.concat(tags.splice(0,Math.ceil(MAXTAG*granTotal/element.subTotal)))
               });
               returnTags.sort((a,b) => a.media_count < b.media_count ? 1 : -1)
               //FB chat
