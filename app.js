@@ -868,8 +868,8 @@ function testImage(senderID, imageObj) {
             .then((instResponses) =>{
               const vectorTags = [];
               const returnTags = [];
-              var granTotal = 0;
-              var elementsNo = 0;
+              let granTotal = 0;
+              let elementsNo = 0;
 
               instResponses.forEach((resp)=>{
                 let data = resp.data.data;
