@@ -874,7 +874,7 @@ function testImage(senderID, imageObj) {
                 resp.data.data.sort((a,b) => a.media_count < b.media_count ? 1 : -1)
                 let subtotal = 0
                 granTotal += resp.data.data.reduce((a,b)=>{
-                  elementsNo ++
+                  elementsNo += 1
                   subtotal += b.media_count
                   return a += b.media_count
                 },0);
@@ -882,6 +882,7 @@ function testImage(senderID, imageObj) {
                 vectorTags.push(resp.data.data)
                 vectorTags.subTotal = subtotal
               });
+
               vectorTags.forEach((tags,i)=>{
                 let el = tags.splice(-1,1)
                 if(tags[tags.length-1].media_count > granTotal/elementsNo)
