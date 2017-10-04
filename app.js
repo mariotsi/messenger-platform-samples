@@ -867,16 +867,28 @@ function testImage(senderID, imageObj) {
           });          
           Promise.all(promises)
             .then((instResponses) =>{
-              const tags = [];
-              let returnTags = [];
+              const vectorTags = [], returnTags = [];
+              let granTotal, elementsNo;
+
               instResponses.forEach((resp)=>{
-                tags.push(resp.data.data.sort((a,b) => a.media_count < b.media_count ? 1 : -1))
+                resp.data.data.sort((a,b) => a.media_count < b.media_count ? 1 : -1)
+                let subtotal = 0
+                granTotal += resp.data.data.reduce((a,b)=>{
+                  elementsNo ++
+                  subtotal += b.media_count
+                  return a += b.media_count
+                },0);
+                returnTags.push(resp.data.data.splice(0,1))
+                vectorTags.push(resp.data.data)
+                vectorTags.subTotal = subtotal
               });
-              tags.forEach((tagVector)=>{
-                returnTags = returnTags.concat(tagVector.slice(0,Math.ceil(MAXTAG/instResponses.length)))
+              vectorTags.forEach((tags,i)=>{
+                let el = tags.splice(-1,1)
+                if(tags[tags.length-1].media_count > granTotal/elementsNo)
+                  returnTags.push(el)                
+                returnTags.push(tags.splice(0,Math.ceil(MAXTAG*granTotal/tags.subTotal)))
               });
               returnTags.sort((a,b) => a.media_count < b.media_count ? 1 : -1)
-
               //FB chat
               requestPromise({
                 uri: 'https://graph.facebook.com/v2.6/me/messages',
