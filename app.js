@@ -875,12 +875,12 @@ function testImage(senderID, imageObj) {
                 let data = resp.data.data;
                 let subtotal = 0;                    
                 data.sort((a,b) => a.media_count < b.media_count ? 1 : -1)
-                console.log('data',JSON.stringify(data))
                 granTotal += data.reduce((a,b)=>{
                   elementsNo += 1
                   subtotal += b.media_count
                   return a += b.media_count
                 },0);
+                console.log('elementsNo',JSON.stringify(elementsNo))
                 returnTags.push(data.splice(0,1))
                 vectorTags.push(data)
                 vectorTags.subTotal = subtotal
