@@ -882,7 +882,13 @@ function testImage(senderID, imageObj) {
                 vectorTags.push(resp.data.data)
                 vectorTags.subTotal = subtotal
               });
-
+              
+              console.log('vectorTags',JSON.stringify(vectorTags))
+              console.log('granTotal',JSON.stringify(granTotal))
+              console.log('elementsNo',JSON.stringify(elementsNo))
+              console.log('first subtotal',JSON.stringify(vectorTags[0].subTotal))
+              
+              
               vectorTags.forEach((tags,i)=>{
                 let el = tags.splice(-1,1)
                 if(tags[tags.length-1].media_count > granTotal/elementsNo)
