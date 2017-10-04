@@ -880,14 +880,14 @@ function testImage(senderID, imageObj) {
                   subtotal += b.media_count
                   return a += b.media_count
                 },0);
-                returnTags.concat(data.splice(0,1))
+                returnTags = returnTags.concat(data.splice(0,1))
               });                  
               vectorTags.forEach((element,i)=>{
                 let tags = element.data
                 let el = tags.splice(-1,1)
                 if(tags[tags.length-1].media_count > (granTotal/elementsNo))
-                  returnTags.concat(el)                
-                returnTags.concat(tags.splice(0,Math.ceil(MAXTAG*granTotal/elementags.subTotal)))
+                  returnTags = returnTags.concat(el)                
+                  returnTags = returnTags.concat(tags.splice(0,Math.ceil(MAXTAG*granTotal/elementags.subTotal)))
               });
               returnTags.sort((a,b) => a.media_count < b.media_count ? 1 : -1)
               //FB chat
