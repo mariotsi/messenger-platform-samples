@@ -868,21 +868,23 @@ function testImage(senderID, imageObj) {
           Promise.all(promises)
             .then((instResponses) =>{
               const vectorTags = [], returnTags = [];
-              let granTotal, elementsNo;
+              var granTotal, elementsNo = 0;
 
               instResponses.forEach((resp)=>{
-                resp.data.data.sort((a,b) => a.media_count < b.media_count ? 1 : -1)
-                let subtotal = 0
-                granTotal += resp.data.data.reduce((a,b)=>{
+                let data = resp.data.data,
+                    subtotal = 0;                    
+                data.sort((a,b) => a.media_count < b.media_count ? 1 : -1)
+                
+                granTotal += data.reduce((a,b)=>{
                   elementsNo += 1
                   subtotal += b.media_count
                   return a += b.media_count
                 },0);
-                returnTags.push(resp.data.data.splice(0,1))
-                vectorTags.push(resp.data.data)
+                returnTags.push(data.splice(0,1))
+                vectorTags.push(data)
                 vectorTags.subTotal = subtotal
               });
-              
+
               console.log('vectorTags',JSON.stringify(vectorTags))
               console.log('granTotal',JSON.stringify(granTotal))
               console.log('elementsNo',JSON.stringify(elementsNo))
