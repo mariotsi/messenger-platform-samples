@@ -867,7 +867,7 @@ function testImage(senderID, imageObj) {
           Promise.all(promises)
             .then((instResponses) =>{
               const vectorTags = [];
-              const returnTags = [];
+              let returnTags = [];
               let granTotal = 0;
               let elementsNo = 0;
 
