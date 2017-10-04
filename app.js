@@ -880,20 +880,19 @@ function testImage(senderID, imageObj) {
                   subtotal += b.media_count
                   return a += b.media_count
                 },0);
-                console.log('elementsNo',JSON.stringify(elementsNo))
-                returnTags.push(data.splice(0,1))
-                vectorTags.push(data)
-                vectorTags.subTotal = subtotal
+                returnTags.concat(data.splice(0,1))
+                vectorTags.push({'data':data,'subTotal':subtotal})
               });
               console.log('granTotal',JSON.stringify(granTotal))
               console.log('elementsNo',JSON.stringify(elementsNo))
               console.log('first subtotal',JSON.stringify(vectorTags[0].subTotal))
                             
-              vectorTags.forEach((tags,i)=>{
+              vectorTags.forEach((element,i)=>{
+                let tags = element.data
                 let el = tags.splice(-1,1)
                 if(tags[tags.length-1].media_count > (granTotal/elementsNo))
-                  returnTags.push(el)                
-                returnTags.push(tags.splice(0,Math.ceil(MAXTAG*granTotal/tags.subTotal)))
+                  returnTags.concat(el)                
+                returnTags.concat(tags.splice(0,Math.ceil(MAXTAG*granTotal/elementags.subTotal)))
               });
               returnTags.sort((a,b) => a.media_count < b.media_count ? 1 : -1)
               //FB chat
