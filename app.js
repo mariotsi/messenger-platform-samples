@@ -867,8 +867,10 @@ function testImage(senderID, imageObj) {
           });          
           Promise.all(promises)
             .then((instResponses) =>{
-              const vectorTags = [], returnTags = [];
-              var granTotal, elementsNo = 0;
+              const vectorTags = [];
+              const returnTags = [];
+              var granTotal = 0;
+              var elementsNo = 0;
 
               instResponses.forEach((resp)=>{
                 let data = resp.data.data,
@@ -893,7 +895,7 @@ function testImage(senderID, imageObj) {
               
               vectorTags.forEach((tags,i)=>{
                 let el = tags.splice(-1,1)
-                if(tags[tags.length-1].media_count > granTotal/elementsNo)
+                if(tags[tags.length-1].media_count > (granTotal/elementsNo))
                   returnTags.push(el)                
                 returnTags.push(tags.splice(0,Math.ceil(MAXTAG*granTotal/tags.subTotal)))
               });
