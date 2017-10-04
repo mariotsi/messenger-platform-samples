@@ -881,12 +881,7 @@ function testImage(senderID, imageObj) {
                   return a += b.media_count
                 },0);
                 returnTags.concat(data.splice(0,1))
-                vectorTags.push({'data':data,'subTotal':subtotal})
-              });
-              console.log('granTotal',JSON.stringify(granTotal))
-              console.log('elementsNo',JSON.stringify(elementsNo))
-              console.log('first subtotal',JSON.stringify(vectorTags[0].subTotal))
-                            
+              });                  
               vectorTags.forEach((element,i)=>{
                 let tags = element.data
                 let el = tags.splice(-1,1)
