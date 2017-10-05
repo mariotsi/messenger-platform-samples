@@ -21,6 +21,7 @@ const bodyParser = require('body-parser'),
   requestPromise = require('request-promise-native'),
   util = require('util');
 
+
 const app = express();
 app.set('port', process.env.PORT || 5000);
 app.set('view engine', 'ejs');
@@ -851,7 +852,6 @@ function testImage(senderID, imageObj) {
       })
         .then(awsResponse => {
           const promises = [];
-
           awsResponse.Labels.forEach(obj => {
             promises.push(
                requestPromise({
@@ -865,16 +865,32 @@ function testImage(senderID, imageObj) {
           });          
           Promise.all(promises)
             .then((instResponses) =>{
-              const tags = [];
+              const vectorTags = [];
+              let returnTags = [];
+              let granTotal = 0;
+              let elementsNo = 0;
+
               instResponses.forEach((resp)=>{
-                tags.push(...resp.data.data)
+                let data = resp.data.data;
+                let subtotal = 0;                    
+                data.sort((a,b) => a.media_count < b.media_count ? 1 : -1);
+                granTotal += data.reduce((a,b)=>{
+                  elementsNo ++;
+                  subtotal += b.media_count;
+                  return a += b.media_count;
+                },0);
+                returnTags = returnTags.concat(data.splice(0,1));
+                vectorTags.push({data,'subTotal':subtotal});
+              });         
+
+              vectorTags.forEach((element,i)=>{
+                let tags = element.data;
+                let el = tags.splice(-1,1);
+                if(tags[tags.length-1].media_count > granTotal/elementsNo)
+                  returnTags = returnTags.concat(el); 
+                returnTags = returnTags.concat(tags.splice(0,Math.ceil(30*granTotal/element.subTotal)));
               });
-              
-              // Sorting
-              tags.sort((a,b) => a.media_count > b.media_count ? 1 : -1);               
-              
-              console.log(JSON.stringify(tags));
-              
+              returnTags.sort((a,b) => a.media_count < b.media_count ? 1 : -1);
               //FB chat
               requestPromise({
                 uri: 'https://graph.facebook.com/v2.6/me/messages',
@@ -885,7 +901,7 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: `#bot ${tags.splice(0,29).map(({name}) => `#${name}`).join().replace(/,/g, ' ')}`,
+                    text: `${returnTags.splice(0,30).map(({name}) => `#${name}`).join().replace(/,/g, ' ')}`,
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
