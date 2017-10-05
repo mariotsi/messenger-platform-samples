@@ -19,8 +19,7 @@ const bodyParser = require('body-parser'),
   uuid = require('uuid'),
   request = require('request'),
   requestPromise = require('request-promise-native'),
-  util = require('util'),
-  MAXTAG = 30;
+  util = require('util');
 
 
 const app = express();
@@ -874,25 +873,24 @@ function testImage(senderID, imageObj) {
               instResponses.forEach((resp)=>{
                 let data = resp.data.data;
                 let subtotal = 0;                    
-                data.sort((a,b) => a.media_count < b.media_count ? 1 : -1)
+                data.sort((a,b) => a.media_count < b.media_count ? 1 : -1);
                 granTotal += data.reduce((a,b)=>{
-                  elementsNo += 1
-                  subtotal += b.media_count
-                  return a += b.media_count
+                  elementsNo ++;
+                  subtotal += b.media_count;
+                  return a += b.media_count;
                 },0);
-                returnTags = returnTags.concat(data.splice(0,1))
-                vectorTags.push({'data':data,'subTotal':subtotal})
+                returnTags = returnTags.concat(data.splice(0,1));
+                vectorTags.push({data,'subTotal':subtotal});
               });         
 
               vectorTags.forEach((element,i)=>{
-                let tags = element.data
-                let el = tags.splice(-1,1)
-                if(tags[tags.length-1].media_count > (granTotal/elementsNo))
-                  returnTags = returnTags.concat(el)  
-
-                returnTags = returnTags.concat(tags.splice(0,Math.ceil(MAXTAG*granTotal/element.subTotal)))
+                let tags = element.data;
+                let el = tags.splice(-1,1);
+                if(tags[tags.length-1].media_count > granTotal/elementsNo)
+                  returnTags = returnTags.concat(el); 
+                returnTags = returnTags.concat(tags.splice(0,Math.ceil(30*granTotal/element.subTotal)));
               });
-              returnTags.sort((a,b) => a.media_count < b.media_count ? 1 : -1)
+              returnTags.sort((a,b) => a.media_count < b.media_count ? 1 : -1);
               //FB chat
               requestPromise({
                 uri: 'https://graph.facebook.com/v2.6/me/messages',
@@ -903,7 +901,7 @@ function testImage(senderID, imageObj) {
                     id: senderID
                   },
                   message: {
-                    text: `${returnTags.splice(0,MAXTAG).map(({name}) => `#${name}`).join().replace(/,/g, ' ')}`,
+                    text: `${returnTags.splice(0,30).map(({name}) => `#${name}`).join().replace(/,/g, ' ')}`,
                     metadata: 'DEVELOPER_DEFINED_METADATA'
                   }
                 }
